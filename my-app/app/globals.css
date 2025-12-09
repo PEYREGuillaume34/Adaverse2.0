@@ -1,5 +1,56 @@
 @import "tailwindcss";
 
+
+@font-face {
+  font-family: 'Futura';
+  src: url('/fonts/Futura-LTPro/FuturaLTProBook.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Futura';
+  src: url('/fonts/Futura-LTPro/FuturaLTProBold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Futura';
+  src: url('/fonts/Futura-LTPro/FuturaLTProBlack.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face{
+  font-family: 'oswald light';
+  src: url('/fonts/Oswald/Oswald-Light.ttf') format('truetype');
+  font-weight: 300;
+}
+
+@font-face{
+  font-family: 'oswald regular';
+  src: url('/fonts/Oswald/Oswald-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+
+@font-face{
+  font-family: 'oswald medium';
+  src: url('/fonts/Oswald/Oswald-Medium.ttf') format('truetype');
+  font-weight: 500;
+}
+
+@font-face{
+  font-family: 'oswald semi bold';
+  src: url('/fonts/Oswald/Oswald-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+}
+
+@font-face{
+  font-family: 'oswald bold';
+  src: url('/fonts/Oswald/Oswald-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -10,7 +61,22 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-ada-bg: #1a1a1a;
+
+  --font-futura: 'Futura', sans-serif;
+  --font-oswald-light: 'oswald light', sans-serif;
+  --font-oswald-regular: 'oswald regular', sans-serif;
+  --font-oswald-medium: 'oswald medium', sans-serif;
+  --font-oswald-semibold: 'oswald semi bold', sans-serif;
+  --font-oswald-bold: 'oswald bold', sans-serif;
+
+  /* Définir vos couleurs personnalisées */
+  --color-ada-red: #FF5757;
+  --color-ada-coral: #FF6B6B;
+  --color-ada-blue: #6B9BD1;
+  --color-ada-dark: #2D3748;
 }
+
 
 @media (prefers-color-scheme: dark) {
   :root {
