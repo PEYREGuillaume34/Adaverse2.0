@@ -1,25 +1,36 @@
-import {
-  serial,
-  integer,
-} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, integer } from 'drizzle-orm/pg-core';
 
+// ========================================
+// TABLES DE BASE
+// ========================================
 
 export const adaTable = pgTable("ada_projects", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  created_at: timestamp("created_at").notNull().defaultNow(),
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const promotionsTable = pgTable("promotions", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  start_date: timestamp("start_date").notNull(),
-  created_at: timestamp("created_at").notNull().defaultNow(),
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const user = pgTable("user", {
+export const projectsTable = pgTable("students_projects", {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    slug: text("slug").notNull().unique(),
+    github_url: text("github_url").notNull(),
+    demo_url: text("demo_url"),
+    promotion_id: integer("promotion_id").references(() => promotionsTable.id),
+    ada_project_id: integer("ada_project_id").references(() => adaTable.id),
+    published_at: timestamp("published_at"),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const usersTable = pgTable("users", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
@@ -28,44 +39,53 @@ export const user = pgTable("user", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
-    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .$onUpdate(() => new Date())
     .notNull(),
-  slug: text("slug").notNull().unique(),
-  github_url: text("github_url").notNull(),
-  demo_url: text("demo_url"),
-  promotion_id: integer("promotion_id").references(() => promotionsTable.id),
-  ada_project_id: integer("ada_project_id").references(() => adaTable.id),
-  published_at: timestamp("published_at"),
+  isAdmin: boolean("isAdmin").default(false).notNull(),
+  isBanished: boolean("isBanished").default(false).notNull(),
 });
 
-export const session = pgTable(
-  "session",
+export const commentsTable = pgTable("comments", {
+    id: serial("id").primaryKey(),
+    message: text("message").notNull(),
+    // ✅ CORRIGÉ : text au lieu de integer (car usersTable.id est text)
+    user_id: text("user_id").references(() => usersTable.id),
+    project_id: integer("project_id").references(() => projectsTable.id),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+});
+
+// ========================================
+// TABLES D'AUTHENTIFICATION (Better-Auth)
+// ========================================
+
+export const sessionsTable = pgTable(
+  "sessions",
   {
     id: text("id").primaryKey(),
     expiresAt: timestamp("expires_at").notNull(),
     token: text("token").notNull().unique(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
-      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .$onUpdate(() => new Date())
       .notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
     userId: text("user_id")
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => usersTable.id, { onDelete: "cascade" }),
   },
   (table) => [index("session_userId_idx").on(table.userId)],
 );
 
-export const account = pgTable(
-  "account",
+export const accountsTable = pgTable(
+  "accounts",
   {
     id: text("id").primaryKey(),
     accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
     userId: text("user_id")
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => usersTable.id, { onDelete: "cascade" }),
     accessToken: text("access_token"),
     refreshToken: text("refresh_token"),
     idToken: text("id_token"),
@@ -75,14 +95,14 @@ export const account = pgTable(
     password: text("password"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
-      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .$onUpdate(() => new Date())
       .notNull(),
   },
   (table) => [index("account_userId_idx").on(table.userId)],
 );
 
-export const verification = pgTable(
-  "verification",
+export const verificationsTable = pgTable(
+  "verifications",
   {
     id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
@@ -91,27 +111,73 @@ export const verification = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
-      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .$onUpdate(() => new Date())
       .notNull(),
   },
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const userRelations = relations(user, ({ many }) => ({
-  sessions: many(session),
-  accounts: many(account),
-}));
+// ========================================
+// RELATIONS
+// ========================================
 
-export const sessionRelations = relations(session, ({ one }) => ({
-  user: one(user, {
-    fields: [session.userId],
-    references: [user.id],
-  }),
-}));
+// ✅ MISE À JOUR : User a aussi des commentaires
+// export const userRelations = relations(usersTable, ({ many }) => ({
+//   sessions: many(sessionsTable),
+//   accounts: many(accountsTable),
+//   comments: many(commentsTable), // ← AJOUTÉ
+// }));
 
-export const accountRelations = relations(account, ({ one }) => ({
-  user: one(user, {
-    fields: [account.userId],
-    references: [user.id],
-  }),
-}));
+// export const sessionRelations = relations(sessionsTable, ({ one }) => ({
+//   user: one(usersTable, {
+//     fields: [sessionsTable.userId],
+//     references: [usersTable.id],
+//   }),
+// }));
+
+// export const accountRelations = relations(accountsTable, ({ one }) => ({
+//   user: one(usersTable, {
+//     fields: [accountsTable.userId],
+//     references: [usersTable.id],
+//   }),
+// }));
+
+// // ✅ AJOUTÉ : Relations pour les projets
+// export const projectRelations = relations(projectsTable, ({ one, many }) => ({
+//   // Un projet appartient à UNE promotion
+//   promotion: one(promotionsTable, {
+//     fields: [projectsTable.promotion_id],
+//     references: [promotionsTable.id],
+//   }),
+//   // Un projet appartient à UN ada_project
+//   adaProject: one(adaTable, {
+//     fields: [projectsTable.ada_project_id],
+//     references: [adaTable.id],
+//   }),
+//   // Un projet peut avoir PLUSIEURS commentaires
+//   comments: many(commentsTable),
+// }));
+
+// // ✅ AJOUTÉ : Relations pour les promotions
+// export const promotionRelations = relations(promotionsTable, ({ many }) => ({
+//   projects: many(projectsTable),
+// }));
+
+// // ✅ AJOUTÉ : Relations pour ada_projects
+// export const adaProjectRelations = relations(adaTable, ({ many }) => ({
+//   studentProjects: many(projectsTable),
+// }));
+
+// // ✅ AJOUTÉ : Relations pour les commentaires
+// export const commentRelations = relations(commentsTable, ({ one }) => ({
+//   // Un commentaire appartient à UN user
+//   user: one(usersTable, {
+//     fields: [commentsTable.user_id],
+//     references: [usersTable.id],
+//   }),
+//   // Un commentaire appartient à UN projet
+//   project: one(projectsTable, {
+//     fields: [commentsTable.project_id],
+//     references: [projectsTable.id],
+//   }),
+// }));
