@@ -18,18 +18,6 @@ export const promotionsTable = pgTable("promotions", {
     created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const projectsTable = pgTable("students_projects", {
-    id: serial("id").primaryKey(),
-    name: text("name").notNull(),
-    slug: text("slug").notNull().unique(),
-    github_url: text("github_url").notNull(),
-    demo_url: text("demo_url"),
-    promotion_id: integer("promotion_id").references(() => promotionsTable.id),
-    ada_project_id: integer("ada_project_id").references(() => adaTable.id),
-    published_at: timestamp("published_at"),
-    created_at: timestamp("created_at").notNull().defaultNow(),
-});
-
 export const usersTable = pgTable("users", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -44,6 +32,20 @@ export const usersTable = pgTable("users", {
   isAdmin: boolean("isAdmin").default(false).notNull(),
   isBanished: boolean("isBanished").default(false).notNull(),
 });
+
+export const projectsTable = pgTable("students_projects", {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    slug: text("slug").notNull().unique(),
+    github_url: text("github_url").notNull(),
+    demo_url: text("demo_url"),
+    promotion_id: integer("promotion_id").references(() => promotionsTable.id),
+    ada_project_id: integer("ada_project_id").references(() => adaTable.id),
+    user_id: text("user_id").references(() => usersTable.id),
+    published_at: timestamp("published_at"),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+});
+
 
 export const commentsTable = pgTable("comments", {
     id: serial("id").primaryKey(),

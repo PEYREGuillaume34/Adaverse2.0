@@ -15,6 +15,13 @@
       "when": 1765288721345,
       "tag": "0001_sudden_dreadnoughts",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765358689553,
+      "tag": "0002_square_meltdown",
+      "breakpoints": true
     }
   ]
 }

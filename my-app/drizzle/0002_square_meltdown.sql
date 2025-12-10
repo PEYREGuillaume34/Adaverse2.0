@@ -1,0 +1,2 @@
+ALTER TABLE "students_projects" ADD COLUMN "user_id" text;--> statement-breakpoint
+ALTER TABLE "students_projects" ADD CONSTRAINT "students_projects_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
