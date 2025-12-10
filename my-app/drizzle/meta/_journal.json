@@ -22,6 +22,13 @@
       "when": 1765358689553,
       "tag": "0002_square_meltdown",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1765365382868,
+      "tag": "0003_stiff_rachel_grey",
+      "breakpoints": true
     }
   ]
 }

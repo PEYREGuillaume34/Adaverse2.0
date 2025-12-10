@@ -18,7 +18,7 @@ export const promotionsTable = pgTable("promotions", {
     created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const usersTable = pgTable("users", {
+export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
@@ -41,7 +41,7 @@ export const projectsTable = pgTable("students_projects", {
     demo_url: text("demo_url"),
     promotion_id: integer("promotion_id").references(() => promotionsTable.id),
     ada_project_id: integer("ada_project_id").references(() => adaTable.id),
-    user_id: text("user_id").references(() => usersTable.id),
+    user_id: text("user_id").references(() => user.id),
     published_at: timestamp("published_at"),
     created_at: timestamp("created_at").notNull().defaultNow(),
 });
@@ -51,7 +51,7 @@ export const commentsTable = pgTable("comments", {
     id: serial("id").primaryKey(),
     message: text("message").notNull(),
     // ✅ CORRIGÉ : text au lieu de integer (car usersTable.id est text)
-    user_id: text("user_id").references(() => usersTable.id),
+    user_id: text("user_id").references(() => user.id),
     project_id: integer("project_id").references(() => projectsTable.id),
     created_at: timestamp("created_at").notNull().defaultNow(),
 });
@@ -60,8 +60,8 @@ export const commentsTable = pgTable("comments", {
 // TABLES D'AUTHENTIFICATION (Better-Auth)
 // ========================================
 
-export const sessionsTable = pgTable(
-  "sessions",
+export const session = pgTable(
+  "session",
   {
     id: text("id").primaryKey(),
     expiresAt: timestamp("expires_at").notNull(),
@@ -74,20 +74,20 @@ export const sessionsTable = pgTable(
     userAgent: text("user_agent"),
     userId: text("user_id")
       .notNull()
-      .references(() => usersTable.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
   },
   (table) => [index("session_userId_idx").on(table.userId)],
 );
 
-export const accountsTable = pgTable(
-  "accounts",
+export const account = pgTable(
+  "account",
   {
     id: text("id").primaryKey(),
     accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
     userId: text("user_id")
       .notNull()
-      .references(() => usersTable.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     accessToken: text("access_token"),
     refreshToken: text("refresh_token"),
     idToken: text("id_token"),
@@ -103,8 +103,8 @@ export const accountsTable = pgTable(
   (table) => [index("account_userId_idx").on(table.userId)],
 );
 
-export const verificationsTable = pgTable(
-  "verifications",
+export const verification = pgTable(
+  "verification",
   {
     id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
@@ -124,23 +124,23 @@ export const verificationsTable = pgTable(
 // ========================================
 
 // ✅ MISE À JOUR : User a aussi des commentaires
-export const userRelations = relations(usersTable, ({ many }) => ({
-  sessions: many(sessionsTable),
-  accounts: many(accountsTable),
+export const userRelations = relations(user, ({ many }) => ({
+  sessions: many(session),
+  accounts: many(account),
   comments: many(commentsTable), // ← AJOUTÉ
 }));
 
-export const sessionRelations = relations(sessionsTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [sessionsTable.userId],
-    references: [usersTable.id],
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, {
+    fields: [session.userId],
+    references: [user.id],
   }),
 }));
 
-export const accountRelations = relations(accountsTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [accountsTable.userId],
-    references: [usersTable.id],
+export const accountRelations = relations(account, ({ one }) => ({
+  user: one(user, {
+    fields: [account.userId],
+    references: [user.id],
   }),
 }));
 
