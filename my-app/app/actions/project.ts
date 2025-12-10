@@ -2,8 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "../lib/db/drizzle";
-import { projectsTable, adaTable, promotionsTable } from "../lib/db/schema";
+import { projectsTable, adaTable, promotionsTable, commentsTable } from "../lib/db/schema";
 import { eq, desc } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 // ==================== HELPER ====================
 
@@ -62,11 +63,56 @@ export async function deleteProject(projectId: number) {
 
 // Récupérer TOUS les projets (publiés ET non publiés)
 export async function getAllProjects() {
-    return await db.select()
-        .from(projectsTable)
-        .leftJoin(promotionsTable, eq(promotionsTable.id, projectsTable.promotion_id))
-        .leftJoin(adaTable, eq(adaTable.id, projectsTable.ada_project_id))
-        .orderBy(desc(projectsTable.published_at)) // Plus récents en premier
+  const result = await db.execute(
+    sql`
+      SELECT 
+        p.*,
+        
+        -- Infos promotion
+        json_build_object(
+          'id', prom.id,
+          'name', prom.name
+        ) as promotion,
+        
+        -- Infos ada_project
+        json_build_object(
+          'id', ada.id,
+          'name', ada.name
+        ) as ada_project,
+        
+        -- ✅ Nombre de commentaires
+        COUNT(c.id) as comments_count,
+        
+        -- ✅ Commentaires groupés (pour la page détail)
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'id', c.id,
+              'message', c.message,
+              'created_at', c.created_at,
+              'user', json_build_object(
+                'id', u.id,
+                'name', u.name,
+                'image', u.image
+              )
+            )
+            ORDER BY c.created_at DESC
+          ) FILTER (WHERE c.id IS NOT NULL),
+          '[]'::json
+        ) as comments
+        
+      FROM students_projects p
+      LEFT JOIN promotions prom ON prom.id = p.promotion_id
+      LEFT JOIN ada_projects ada ON ada.id = p.ada_project_id
+      LEFT JOIN comments c ON c.project_id = p.id
+      LEFT JOIN "user" u ON u.id = c.user_id
+      
+      GROUP BY p.id, prom.id, prom.name, ada.id, ada.name
+      ORDER BY p.published_at DESC NULLS LAST
+    `
+  );
+
+  return result.rows;
 }
 
 export async function getProjectBySlug(slug: string) {

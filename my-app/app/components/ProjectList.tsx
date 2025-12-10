@@ -9,12 +9,12 @@ export default function ProjectList({ projects }: Props) {
     const grouped: Record<string, ProjectWithRelations[]> = {}
     
     
-    for (let item of projects) {
-        const adaName = item.ada_projects?.name || "Sans catégorie"
+    for (let project of projects) {
+        const adaName = project.ada_project?.name || "Sans catégorie"
         if (!grouped[adaName]) { 
             grouped[adaName] = [] 
         }
-        grouped[adaName].push(item)
+        grouped[adaName].push(project)
         
     }
 
@@ -43,7 +43,7 @@ export default function ProjectList({ projects }: Props) {
                         {/* Grille responsive des cards */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {projectsList.map((project) => (
-                               <ProjectCard key={project.students_projects.id} project={project} />
+                               <ProjectCard key={project.id} project={project} />
                             ))}
                         </div>
                     </div>

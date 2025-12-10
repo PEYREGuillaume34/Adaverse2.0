@@ -15,10 +15,9 @@ export default function FilterData({ projects, promos }: Props) {
 
   const filteredProjects = projects.filter((project) => {
     if (selectedPromo === "") return true;
-    return project.promotions?.id === Number(selectedPromo);
+    return project.promotion?.id === Number(selectedPromo);
   });
 
-  console.log("hello")
 
   return (
     <div>
