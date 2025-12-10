@@ -122,25 +122,25 @@ export const verificationsTable = pgTable(
 // ========================================
 
 // ✅ MISE À JOUR : User a aussi des commentaires
-// export const userRelations = relations(usersTable, ({ many }) => ({
-//   sessions: many(sessionsTable),
-//   accounts: many(accountsTable),
-//   comments: many(commentsTable), // ← AJOUTÉ
-// }));
+export const userRelations = relations(usersTable, ({ many }) => ({
+  sessions: many(sessionsTable),
+  accounts: many(accountsTable),
+  comments: many(commentsTable), // ← AJOUTÉ
+}));
 
-// export const sessionRelations = relations(sessionsTable, ({ one }) => ({
-//   user: one(usersTable, {
-//     fields: [sessionsTable.userId],
-//     references: [usersTable.id],
-//   }),
-// }));
+export const sessionRelations = relations(sessionsTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [sessionsTable.userId],
+    references: [usersTable.id],
+  }),
+}));
 
-// export const accountRelations = relations(accountsTable, ({ one }) => ({
-//   user: one(usersTable, {
-//     fields: [accountsTable.userId],
-//     references: [usersTable.id],
-//   }),
-// }));
+export const accountRelations = relations(accountsTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [accountsTable.userId],
+    references: [usersTable.id],
+  }),
+}));
 
 // // ✅ AJOUTÉ : Relations pour les projets
 // export const projectRelations = relations(projectsTable, ({ one, many }) => ({
