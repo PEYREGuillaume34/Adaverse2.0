@@ -116,13 +116,54 @@ export async function getAllProjects() {
 }
 
 export async function getProjectBySlug(slug: string) {
-    const result = await db.select()
-        .from(projectsTable)
-        .leftJoin(promotionsTable, eq(promotionsTable.id, projectsTable.promotion_id))
-        .leftJoin(adaTable, eq(adaTable.id, projectsTable.ada_project_id))
-        .where(eq(projectsTable.slug, slug))
-    console.log("voir result ", result[0]);
-    return result[0] || null
+    const result = await db.execute(
+      sql`
+      SELECT 
+        p.*,
+        
+        -- Infos promotion
+        json_build_object(
+          'id', prom.id,
+          'name', prom.name
+        ) as promotion,
+        
+        -- Infos ada_project
+        json_build_object(
+          'id', ada.id,
+          'name', ada.name
+        ) as ada_project,
+        
+        -- ✅ Commentaires groupés (pour la page détail)
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'id', c.id,
+              'message', c.message,
+              'created_at', c.created_at,
+              'user', json_build_object(
+                'id', u.id,
+                'name', u.name,
+                'image', u.image
+              )
+            )
+            ORDER BY c.created_at DESC
+          ) FILTER (WHERE c.id IS NOT NULL),
+          '[]'::json
+        ) as comments
+        
+      FROM students_projects p
+      LEFT JOIN promotions prom ON prom.id = p.promotion_id
+      LEFT JOIN ada_projects ada ON ada.id = p.ada_project_id
+      LEFT JOIN comments c ON c.project_id = p.id
+      LEFT JOIN "user" u ON u.id = c.user_id
+      WHERE p.slug = ${slug}
+      
+      GROUP BY p.id, prom.id, prom.name, ada.id, ada.name
+    `
+    )
+        
+    console.log("voir result ", result.rows[0]);
+    return result.rows[0] || null
 }
 
 
