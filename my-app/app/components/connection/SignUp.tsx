@@ -7,13 +7,12 @@ export default function SignUp() {
   const [isOpen, setIsOpen] = useState(false);
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
-
-  
+  const form = searchParams.get("form")
     React.useEffect(() => {
-      if (error) {
+      if (error && form === "signup") {
         setIsOpen(true);
       }
-    }, [error]);
+    }, [error, form]);
   return (
     <>
       <button

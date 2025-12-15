@@ -9,15 +9,15 @@ export const signup = async (formData: FormData) => {
     const password = formData.get("password") as string;
 
     if (!name) {
-        redirect("/auth/signup?error=name-missing");
+        redirect("/?form=signup&error=name-missing");
     }
 
     if (!email) {
-        redirect("/auth/signup?error=email-missing");
+        redirect("/?form=signup&error=email-missing");
     }
 
     if (!password) {
-        redirect("/auth/signup?error=password-missing");
+        redirect("/?form=signup&error=password-missing");
     }
 
     const response = await auth.api.signUpEmail({
@@ -34,17 +34,18 @@ export const signup = async (formData: FormData) => {
 console.log("ERREUR API :", errorData);
         if (errorData.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
             console.error("Ce compte existe déjà");
-            redirect("/auth/signup?error=USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL");
+            redirect("/?form=signup&error=USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL");
         } 
         else if (errorData.code === "PASSWORD_TOO_SHORT"){
             console.error("Mot de passe trop court ");
-            redirect("/auth/signup?error='PASSWORD_TOO_SHORT'")
+            redirect("/?form=signup&error='PASSWORD_TOO_SHORT'")
+
         }
         
         else
          {
             console.error("Echec de l'inscription:", errorData.message);
-            redirect("/auth/signup?error=generic");
+            redirect("/?form=signup&error=generic");
         }
     }
 
@@ -56,11 +57,11 @@ export const signin = async (formData: FormData) => {
     const password = formData.get("password") as string;
 
     if (!email) {
-        redirect("/auth/signin?error=email-missing");
+        redirect("/?form=signin&error=email-missing");
     }
 
     if (!password) {
-        redirect("/auth/signin?error=password-missing");
+        redirect("/?form=signin&error=password-missing");
     }
 
     const response = await auth.api.signInEmail({
@@ -75,11 +76,11 @@ export const signin = async (formData: FormData) => {
         const errorData = await response.json();
 console.log("ERREUR API :", errorData);
        if (errorData.code === "INVALID_EMAIL_OR_PASSWORD") {
-        redirect("/auth/signin?error=invalid-credentials"); 
+        redirect("/?form=signin&error=invalid-credentials"); 
     } 
  else {
             console.error("Echec de la connexion:", errorData.message);
-            redirect("/auth/signin?error=generic");
+            redirect("/?form=signin&error=generic");
         }
     }
 

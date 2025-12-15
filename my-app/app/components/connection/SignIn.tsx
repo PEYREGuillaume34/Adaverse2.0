@@ -9,12 +9,13 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
+  const form = searchParams.get("form")
 
   React.useEffect(() => {
-    if (error) {
+    if (error&& form==="signin") {
       setIsOpen(true);
     }
-  }, [error]);
+  }, [error, form]);
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
