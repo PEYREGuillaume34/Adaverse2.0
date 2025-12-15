@@ -111,3 +111,42 @@ export async function updateComment(commentId: number, newMessage: string) {
 
     revalidatePath("/project/[slug]");
 }
+
+
+// Supprimer un commentaire (admin uniquement)
+export async function deleteCommentAdmin(commentId: number) {
+    // 1. Vérifier que l'utilisateur est connecté
+    const session = await auth.api.getSession({
+        headers: await headers()
+    });
+
+    if (!session) {
+        throw new Error("Vous devez être connecté");
+    }
+
+    // 2. Vérifier que l'utilisateur est admin
+    const userInfo = await db.select()
+        .from(user)
+        .where(eq(user.id, session.user.id))
+        .limit(1);
+
+    if (!userInfo[0]?.isAdmin) {
+        throw new Error("Action réservée aux administrateurs");
+    }
+
+    // 3. Vérifier que le commentaire existe
+    const comment = await db.select()
+        .from(commentsTable)
+        .where(eq(commentsTable.id, commentId))
+        .limit(1);
+
+    if (!comment[0]) {
+        throw new Error("Commentaire introuvable");
+    }
+
+    // 4. Supprimer le commentaire (pas de vérification du propriétaire)
+    await db.delete(commentsTable)
+        .where(eq(commentsTable.id, commentId));
+
+    revalidatePath("/project/[slug]");
+}

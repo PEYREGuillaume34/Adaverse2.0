@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { deleteCommentAdmin } from "@/app/actions/comments";
 
 type Comment = {
   id: number;
@@ -18,6 +19,19 @@ type Props = {
 };
 
 export default function ListAdmin({ comments, userId }: Props) {
+  // Fonction pour supprimer (admin)
+  const handleDelete = async (commentId: number) => {
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce commentaire ?")) {
+      try {
+        await deleteCommentAdmin(commentId);
+      } catch (error) {
+        alert(
+          error instanceof Error ? error.message : "Erreur lors de la suppression"
+        );
+      }
+    }
+  };
+
   if (comments.length === 0) {
     return (
       <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
@@ -86,7 +100,10 @@ export default function ListAdmin({ comments, userId }: Props) {
               <button className="w-[140px] h-[50px] font-oswald-semibold flex-1 bg-ada-dark hover:bg-gray-800 text-white text-sm py-2 rounded-lg transition-all disabled:opacity-50">
                 🤬 Bannir
               </button>
-              <button className="w-[140px] h-[50px] font-oswald-semibold flex-1 bg-red-500 hover:bg-red-600 text-white text-sm py-2 rounded-lg transition-all disabled:opacity-50">
+              <button
+                onClick={() => handleDelete(comment.id)}
+                className="w-[140px] h-[50px] font-oswald-semibold flex-1 bg-red-500 hover:bg-red-600 text-white text-sm py-2 rounded-lg transition-all disabled:opacity-50"
+              >
                 🗑️ Supprimer
               </button>
             </div>
