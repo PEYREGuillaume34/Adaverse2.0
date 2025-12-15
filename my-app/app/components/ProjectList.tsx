@@ -54,5 +54,3 @@ export default function ProjectList({ projects }: Props) {
 }
 
 
-    // Exemple : Ada Quiz [Card projet1] [Card projet2] [Card projet3]
-    //           Dataviz [Card projet4] [Card projet5]

@@ -5,7 +5,8 @@ import SignIn from "./components/connection/SignIn";
 import SignOutButton from "./components/connection/SignOutButton";
 import { auth } from "./lib/auth";
 import { headers } from "next/headers";
-
+import FormModal from "./components/Formulaire/FormModal";
+import NavSelect from "./components/NavSelect";
 
 export const metadata: Metadata = {
   title: "Adaverse",
@@ -13,21 +14,32 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth.api.getSession({headers: await headers()});
+  const session = await auth.api.getSession({ headers: await headers() });
 
-  
   return (
     <html lang="en">
-      <body
-      > 
-      <nav className= "flex flex-row justify-end gap-4 p-4">
-           {session ? (
-            // Si connecté : afficher le bouton de déconnexion
-            <SignOutButton />
+      <body>
+        <nav className="flex justify-end items-baseline gap-4 p-4">
+          {/* Logo/Titre style Ada */}
+          <h1 className="text-5xl font-futura mr-auto">
+            <a href="/">
+              <span className="text-ada-dark font-bold">ada</span>
+              <span className="text-ada-red font-normal text-5xl">verse</span>
+            </a>
+          </h1>
+
+          <NavSelect />
+
+          {/* Si connecté : afficher le bouton de déconnexion */}
+          {session ? (
+            <>
+            <FormModal />
+              <SignOutButton />
+            </>
           ) : (
             // Si non connecté : afficher inscription + connexion
             <>
@@ -35,7 +47,8 @@ export default async function RootLayout({
               <SignIn />
             </>
           )}
-      </nav>
+        </nav>
+
         {children}
       </body>
     </html>

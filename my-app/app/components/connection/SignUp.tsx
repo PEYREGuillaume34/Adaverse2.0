@@ -8,10 +8,10 @@ export default function SignUp() {
   return (
     <>
       <button
-        className="w-full bg-ada-red hover:bg-ada-coral text-white font-black py-4 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all mt-6 font-oswald-bold text-2xl"
+        className="bg-ada-red hover:bg-ada-coral text-white font-oswald-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
         onClick={() => setIsOpen(true)}
       >
-        s'inscrire
+        S'INSCRIRE
       </button>
 
       {isOpen && (

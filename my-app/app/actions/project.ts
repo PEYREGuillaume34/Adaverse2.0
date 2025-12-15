@@ -59,12 +59,7 @@ export async function addProject(formData: FormData) {
     revalidatePath("/")
 }
 
-export async function isUserConnected() {
-    const session = await auth.api.getSession({
-        headers: await headers()
-    });
-    return !!session;
-}
+
 
 export async function publishProject(projectId: number) {
     await db.update(projectsTable)

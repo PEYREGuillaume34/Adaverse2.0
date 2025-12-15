@@ -39,6 +39,7 @@ export default async function ProjectPage({
   }
   const session = await auth.api.getSession({ headers: await headers() });
   // console.log("session", session);
+  
   //récupérer l'état connexion et les rôles:
   let isAdmin;
   let connectedUserId;
