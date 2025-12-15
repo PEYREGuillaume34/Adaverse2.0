@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { publishProject, deleteProject } from "@/app/actions/project";
 import { useState } from "react";
 import ProjectImage from "../ProjectImage";
@@ -12,7 +13,7 @@ type Props = {
 
 export default function ProjectCardAdmin({ projectId, project }: Props) {
   const [loading, setLoading] = useState(false);
-  const p = project; // plus de project.ada_project / students_projects
+  const p = project;
   const isPublished = !!p.published_at;
 
   const handlePublish = async (e: React.MouseEvent) => {
@@ -30,9 +31,10 @@ export default function ProjectCardAdmin({ projectId, project }: Props) {
   };
 
   return (
-    <div
+    <Link
+      href={`/project/${p.slug}`}
       className={`
-        group block rounded-xl overflow-hidden relative transition-all duration-300
+        group block rounded-xl overflow-hidden relative transition-all duration-300 cursor-pointer
         ${
           isPublished
             ? "bg-white shadow-md hover:shadow-2xl border-2 border-white hover:-translate-y-1"
@@ -40,7 +42,6 @@ export default function ProjectCardAdmin({ projectId, project }: Props) {
         }
       `}
     >
-      {/* Badge si non publié */}
       {!isPublished && (
         <div className="absolute top-3 left-3 z-10">
           <span className="inline-block bg-yellow-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg animate-pulse">
@@ -49,7 +50,11 @@ export default function ProjectCardAdmin({ projectId, project }: Props) {
         </div>
       )}
 
-      <ProjectImage githubUrl={p.github_url} projectName={p.name} height="h-48" />
+      <ProjectImage
+        githubUrl={p.github_url}
+        projectName={p.name}
+        height="h-48"
+      />
 
       <div className="p-5">
         <h3 className="text-xl font-bold mb-3 text-gray-700 group-hover:text-ada-red transition-colors">
@@ -63,9 +68,11 @@ export default function ProjectCardAdmin({ projectId, project }: Props) {
             : "En attente de publication"}
         </p>
 
-        {/* Boutons uniquement si NON publié */}
         {!isPublished && (
-          <div className="flex gap-2 mt-4" onClick={(e) => e.preventDefault()}>
+          <div
+            className="flex gap-2 mt-4"
+            onClick={(e) => e.preventDefault()}
+          >
             <button
               onClick={handlePublish}
               disabled={loading}
@@ -90,6 +97,6 @@ export default function ProjectCardAdmin({ projectId, project }: Props) {
           </div>
         )}
       </div>
-    </div>
+    </Link>
   );
 }
