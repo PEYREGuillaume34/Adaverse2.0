@@ -1,4 +1,4 @@
-import { addProject } from "../../actions/project"
+import { addProject } from "@/app/actions/project"
 import type { Promotion, AdaProject } from "@/app/types"
 import SelectAdaProject from "./SelectAdaProject"
 import SelectPromo from "./SelectPromo"

@@ -4,16 +4,19 @@ import { db } from "../lib/db/drizzle";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { user } from "@/app/lib/db/schema";
-import { commentsTable } from "../lib/db/schema";
+import { getAllProjects, getPromotions } from "../actions/project";
+import FilterDataAdmin from "../components/admin/FilterDataAdmin";
 
 export default async function Admin() {
     const session = await auth.api.getSession({ headers: await headers() });
+    const projects = await getAllProjects();
+    const promos = await getPromotions();
 
     if (session === null) {
         redirect("/")
     }
 
-    const connectedUser = await db.select({isAdmin: user.isAdmin}).from(user).where(eq(user.id, session?.user.id));
+    const connectedUser = await db.select({ isAdmin: user.isAdmin }).from(user).where(eq(user.id, session?.user.id));
 
     console.log("💩", connectedUser)
 
@@ -21,6 +24,11 @@ export default async function Admin() {
         redirect("/");
     }
     return (
-        <p>connectedUser</p>
+        <div>
+            <FilterDataAdmin
+                projects={projects}
+                promos={promos}
+            />
+        </div>
     )
 }
