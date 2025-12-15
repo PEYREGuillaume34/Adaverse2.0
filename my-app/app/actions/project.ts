@@ -55,7 +55,7 @@ export async function addProject(formData: FormData) {
         // ✅ published_at absent → NULL par défaut
     });
 
-    revalidatePath("/")
+    revalidatePath("/");
 }
 
 export async function isUserConnected() {
