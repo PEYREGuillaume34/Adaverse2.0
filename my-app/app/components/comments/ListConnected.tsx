@@ -21,7 +21,7 @@ type Props = {
   projectId: string;
 };
 
-export default function ListConnected({ comments, userId }: Props) {
+export default function ListConnected({ comments, userId, projectId }: Props) {
   // État pour savoir quel commentaire est en cours d'édition
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editMessage, setEditMessage] = useState("");
