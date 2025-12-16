@@ -7,6 +7,7 @@ import { eq, desc, isNotNull } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { headers } from "next/dist/server/request/headers";
 import { auth } from "../lib/auth";
+import type { ProjectWithRelations, ProjectDetail } from "@/app/types";
 
 // ==================== HELPER ====================
 
@@ -87,7 +88,7 @@ export async function getPublishedProjects() {
 }
 
 // ✅ ADMIN : tous les projets
-export async function getAllProjects() {
+export async function getAllProjects(): Promise<ProjectWithRelations[]> {
   const result = await db.execute(
     sql`
       SELECT 
@@ -137,10 +138,10 @@ export async function getAllProjects() {
     `
   );
 
-  return result.rows;
+  return result.rows as ProjectWithRelations[];
 }
 
-export async function getProjectBySlug(slug: string) {
+export async function getProjectBySlug(slug: string): Promise<ProjectDetail | null> {
     const result = await db.execute(
       sql`
       SELECT 
@@ -188,7 +189,7 @@ export async function getProjectBySlug(slug: string) {
     )
         
     console.log("voir result ", result.rows[0]);
-    return result.rows[0] || null
+    return (result.rows[0] as ProjectDetail) || null
 }
 
 export async function getPromotions() {

@@ -36,8 +36,8 @@ export default async function RootLayout({
             </a>
           </h1>
 
+          <UserSession session={session}/>
           <NavSelect />
-            <UserSession session={session}/>
           
         </nav>
 

@@ -111,4 +111,11 @@ export type Session = {
         name: string;
         image?: string | null | undefined;
     };
-} 
+}
+
+// Type pour la session utilisateur simplifiée passée aux composants
+export type UserSessionData = {
+  id: string;
+  name: string;
+  email: string;
+} | null;
