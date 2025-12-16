@@ -17,15 +17,6 @@ export async function addComment(projectId: number, message: string) {
         throw new Error("Vous devez être connecté");
     }
 
-    // ✅ Vérifier si l'utilisateur est banni
-    const userInfo = await db.select()
-        .from(user)
-        .where(eq(user.id, session.user.id))
-        .limit(1);
-
-    if (userInfo[0]?.isBanished) {
-        throw new Error("Vous avez été banni et ne pouvez plus commenter");
-    }
 
     // 3. Vérifier que le message n'est pas vide
     if (!message || message.trim() === "") {
