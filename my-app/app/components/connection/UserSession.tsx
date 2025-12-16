@@ -3,6 +3,7 @@ import SignIn from "./SignIn";
 import SignOutButton from "./SignOutButton";
 import SignUp from "./SignUp";
 import { CircleUserRound } from "lucide-react";
+import FormModal from "../Formulaire/FormModal";
 
 export default function UserSession({session}){
      if(!session){
@@ -17,6 +18,7 @@ export default function UserSession({session}){
         <div className="flex items-center gap-2">
             <CircleUserRound className="w-6 h-6 text-ada-red"/> 
             <span>{session.name}</span>
+             <FormModal />
             <SignOutButton/>
         </div>
      )
