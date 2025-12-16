@@ -1,5 +1,6 @@
 "use client";
 import { addComment } from "@/app/actions/comments";
+import { addComment } from "@/app/actions/comments";
 import Image from "next/image";
 import { useState } from "react";
 import { deleteComment, updateComment } from "@/app/actions/comments";
@@ -18,6 +19,7 @@ type Comment = {
 type Props = {
   comments: Comment[];
   userId: string;
+  projectId: string;
   projectId: string;
 };
 
@@ -175,17 +177,23 @@ export default function ListConnected({ comments, userId, projectId }: Props) {
       )}
       {/* champ input ajout commentaire */}
           <form className="flex gap-6 mt-6" action={addComment}>
+          <form className="flex gap-6 mt-6" action={addComment}>
             <input
               type="text"
               placeholder="Ajouter un commentaire"
+              name="comment"
               name="comment"
               className="font-oswald-regular w-8/10 border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:border-ada-red focus:ring-2 focus:ring-ada-red/20 transition-all"
             />
             <input type="hidden" name= "userId" value={userId}/>
             <input type="hidden" name="projectId"   value={projectId}/>
             <button type="submit" className=" w-1/10 h-[50px] font-oswald-semibold flex-1 bg-green-500 hover:bg-green-600 text-white text-sm py-2 rounded-lg transition-all">
+            <input type="hidden" name= "userId" value={userId}/>
+            <input type="hidden" name="projectId"   value={projectId}/>
+            <button type="submit" className=" w-1/10 h-[50px] font-oswald-semibold flex-1 bg-green-500 hover:bg-green-600 text-white text-sm py-2 rounded-lg transition-all">
               ✍️ PUBLIER
             </button>
+          </form>
           </form>
     </div>
   );

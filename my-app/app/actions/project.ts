@@ -7,7 +7,6 @@ import { eq, desc, isNotNull } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { headers } from "next/dist/server/request/headers";
 import { auth } from "../lib/auth";
-import { redirect } from "next/dist/client/components/navigation";
 
 // ==================== HELPER ====================
 
