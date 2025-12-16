@@ -90,6 +90,12 @@ export default function ProjectCardAdmin({ projectId, project }: Props) {
             </button>
           </div>
         )}
+           {/* ✅ AJOUT : Nombre de commentaires */}
+        <p className="text-sm text-gray-500 flex items-center gap-2 mt-2">
+          <span>💬</span>
+          {project.comments_count}{" "}
+          {project.comments_count > 1 ? "commentaires" : "commentaire"}
+        </p>
 
         {isPublished && (
           <div className="mt-4 text-green-600 font-semibold text-sm">

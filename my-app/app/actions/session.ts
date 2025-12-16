@@ -5,7 +5,7 @@ import {  headers } from "next/headers";
 export const  getSession = async() =>{
 
     try {
-        const headerList =  headers();
+        const headerList = await headers();
 
         const session = await auth.api.getSession({headers:headerList, });
 
