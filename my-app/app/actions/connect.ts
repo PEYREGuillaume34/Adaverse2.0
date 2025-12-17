@@ -2,6 +2,9 @@
 import { auth } from "@/app/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { db } from "@/app/lib/db/drizzle";
+import { user } from "@/app/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export const signup = async (formData: FormData) => {
     const name = formData.get("name") as string;
@@ -31,19 +34,18 @@ export const signup = async (formData: FormData) => {
 
     if (!response.ok) {
         const errorData = await response.json();
-console.log("ERREUR API :", errorData);
+        console.log("ERREUR API :", errorData);
         if (errorData.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
             console.error("Ce compte existe déjà");
             redirect("/?form=signup&error=USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL");
-        } 
-        else if (errorData.code === "PASSWORD_TOO_SHORT"){
+        }
+        else if (errorData.code === "PASSWORD_TOO_SHORT") {
             console.error("Mot de passe trop court ");
             redirect("/?form=signup&error='PASSWORD_TOO_SHORT'")
 
         }
-        
-        else
-         {
+
+        else {
             console.error("Echec de l'inscription:", errorData.message);
             redirect("/?form=signup&error=generic");
         }
@@ -56,35 +58,46 @@ export const signin = async (formData: FormData) => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    if (!email) {
-        redirect("/?form=signin&error=email-missing");
-    }
+    if (!email) redirect("/?form=signin&error=email-missing");
+    if (!password) redirect("/?form=signin&error=password-missing");
 
-    if (!password) {
-        redirect("/?form=signin&error=password-missing");
-    }
-
+    // 1️⃣ Login
     const response = await auth.api.signInEmail({
-        body: {
-            email,
-            password,
-        },
+        body: { email, password },
         asResponse: true,
     });
 
     if (!response.ok) {
         const errorData = await response.json();
-console.log("ERREUR API :", errorData);
-       if (errorData.code === "INVALID_EMAIL_OR_PASSWORD") {
-        redirect("/?form=signin&error=invalid-credentials"); 
-    } 
- else {
-            console.error("Echec de la connexion:", errorData.message);
-            redirect("/?form=signin&error=generic");
+        console.log("ERREUR API :", errorData);
+
+        if (errorData.code === "INVALID_EMAIL_OR_PASSWORD") {
+            redirect("/?form=signin&error=invalid-credentials");
         }
+
+        console.error("Echec de la connexion:", errorData.message);
+        redirect("/?form=signin&error=generic");
     }
 
-    redirect("/"); // on redirige vers la home page une fois connecté
+    // 2️⃣ Récupérer l'utilisateur AVANT que la session soit créée
+    const fullUser = await db.query.user.findFirst({
+        where: eq(user.email, email),
+    });
+
+    if (!fullUser) {
+        console.error("Utilisateur introuvable en base");
+        redirect("/?form=signin&error=user-not-found");
+    }
+
+    const isAdmin = fullUser.isAdmin;
+    console.log("isAdmin =", isAdmin);
+
+    // 3️⃣ Redirection immédiate (la session sera active sur la page suivante)
+    if (isAdmin) {
+        redirect("/admin");
+    }
+
+    redirect("/");
 };
 
 export const signout = async () => {
