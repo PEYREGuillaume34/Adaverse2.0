@@ -21,34 +21,40 @@
   font-weight: 900;
   font-style: normal;
 }
+
 @font-face{
-  font-family: 'Oswald-Light';
-  src: url('/fonts/Oswald/Oswald-Light.ttf') format('truetype');
+  font-family: 'oswald';
+  src: url('/fonts/oswald/Oswald-Light.ttf') format('truetype');
   font-weight: 300;
+  font-style: normal;
 }
 
 @font-face{
-  font-family: 'Oswald-Regular';
-  src: url('/fonts/Oswald/Oswald-Regular.ttf') format('truetype');
+  font-family: 'oswald';
+  src: url('/fonts/oswald/Oswald-Regular.ttf') format('truetype');
   font-weight: 400;
+  font-style: normal;
 }
 
 @font-face{
-  font-family: 'Oswald-medium';
-  src: url('/fonts/Oswald/Oswald-Medium.ttf') format('truetype');
+  font-family: 'oswald';
+  src: url('/fonts/oswald/Oswald-Medium.ttf') format('truetype');
   font-weight: 500;
+  font-style: normal;
 }
 
 @font-face{
-  font-family: 'Oswald-Semibold';
-  src: url('/fonts/Oswald/Oswald-SemiBold.ttf') format('truetype');
+  font-family: 'oswald';
+  src: url('/fonts/oswald/Oswald-SemiBold.ttf') format('truetype');
   font-weight: 600;
+  font-style: normal;
 }
 
 @font-face{
-  font-family: 'Oswald-Bold';
-  src: url('/fonts/Oswald/Oswald-Bold.ttf') format('truetype');
+  font-family: 'oswald';
+  src: url('/fonts/oswald/Oswald-Bold.ttf') format('truetype');
   font-weight: 700;
+  font-style: normal;
 }
 
 :root {
@@ -64,17 +70,19 @@
   --color-ada-bg: #1a1a1a;
 
   --font-futura: 'Futura', sans-serif;
-  --font-oswald-light: 'Oswald-Light', sans-serif;
-  --font-oswald-regular: 'Oswald-Regular', sans-serif;
-  --font-oswald-medium: 'Oswald-Medium', sans-serif;
-  --font-oswald-semibold: 'Oswald-Semibold', sans-serif;
-  --font-oswald-bold: 'Oswald-Bold', sans-serif;
+  --font-oswald-light: 'oswald', sans-serif;
+  --font-oswald-regular: 'oswald', sans-serif;
+  --font-oswald-medium: 'oswald', sans-serif;
+  --font-oswald-semibold: 'oswald', sans-serif;
+  --font-oswald-bold: 'oswald', sans-serif;
+  
   /* Définir vos couleurs personnalisées */
   --color-ada-red: #FF5757;
   --color-ada-coral: #FF6B6B;
   --color-ada-blue: #6B9BD1;
   --color-ada-dark: #2D3748;
 }
+
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -87,4 +95,56 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Utilitaires pour font-weight avec Oswald */
+.font-oswald-light {
+  font-family: 'oswald', sans-serif;
+  font-weight: 300;
+}
+
+.font-oswald-regular {
+  font-family: 'oswald', sans-serif;
+  font-weight: 400;
+}
+
+.font-oswald-medium {
+  font-family: 'oswald', sans-serif;
+  font-weight: 500;
+}
+
+.font-oswald-semibold {
+  font-family: 'oswald', sans-serif;
+  font-weight: 600;
+}
+
+.font-oswald-bold {
+  font-family: 'oswald', sans-serif;
+  font-weight: 700;
+}
+
+/* Classes avec majuscules (pour compatibilité) */
+.font-Oswald-light {
+  font-family: 'oswald', sans-serif;
+  font-weight: 300;
+}
+
+.font-Oswald-regular {
+  font-family: 'oswald', sans-serif;
+  font-weight: 400;
+}
+
+.font-Oswald-medium {
+  font-family: 'oswald', sans-serif;
+  font-weight: 500;
+}
+
+.font-Oswald-semibold {
+  font-family: 'oswald', sans-serif;
+  font-weight: 600;
+}
+
+.font-Oswald-bold {
+  font-family: 'oswald', sans-serif;
+  font-weight: 700;
 }
