@@ -78,7 +78,6 @@ export default function Formulaire({ promos, adaProjects, setIsOpen }: Props) {
                     <SelectPromo promos={promos} />
                     <SelectAdaProject adaProjects={adaProjects} />
 
-
                     {/* Boutons */}
                       <button
                         type="submit"
