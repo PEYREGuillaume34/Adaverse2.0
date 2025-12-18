@@ -36,6 +36,7 @@ export type ProjectWithRelations = {
       id: string;
       name: string;
       image: string | null;
+      isBanished: boolean;
     } | null;
   }>;
 };
@@ -86,6 +87,7 @@ export type ProjectDetail = {
       id: string;
       name: string;
       image: string | null;
+      isBanished: boolean;  // ← Ajouter cette ligne
     } | null;
   }>;
 };
@@ -119,3 +121,5 @@ export type UserSessionData = {
   name: string;
   email: string;
 } | null;
+
+export type SelectChangeEvent = React.ChangeEvent<HTMLSelectElement>;

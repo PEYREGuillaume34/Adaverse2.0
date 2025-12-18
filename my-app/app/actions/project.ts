@@ -169,7 +169,8 @@ export async function getProjectBySlug(slug: string): Promise<ProjectDetail | nu
               'user', json_build_object(
                 'id', u.id,
                 'name', u.name,
-                'image', u.image
+                'image', u.image,
+                'isBanished', u."isBanished"
               )
             )
             ORDER BY c.created_at DESC

@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import { getPromotions } from "../actions/project"
-import type { Promotion } from "../types"
+import type { Promotion, SelectChangeEvent } from "../types"
 import { useRouter } from "next/navigation"
 
 export default function NavSelect ({}) {
@@ -12,7 +12,7 @@ export default function NavSelect ({}) {
     }, [])
 
     const router = useRouter()
-    const handleChange = (e) => {
+    const handleChange = (e: SelectChangeEvent) => {
         router.push(`/?promo=${e.target.value}`)
     }
     return (

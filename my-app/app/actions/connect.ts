@@ -61,7 +61,23 @@ export const signin = async (formData: FormData) => {
     if (!email) redirect("/?form=signin&error=email-missing");
     if (!password) redirect("/?form=signin&error=password-missing");
 
-    // 1️⃣ Login
+    // ✅ ÉTAPE 1 : Vérifier le ban AVANT la connexion
+    const userData = await db
+        .select({ 
+            isBanished: user.isBanished,
+            name: user.name,
+        })
+        .from(user)
+        .where(eq(user.email, email))
+        .limit(1);
+
+    // ✅ Si banni, refuser AVANT la connexion (avec le nom dans l'URL)
+    if (userData.length > 0 && userData[0].isBanished) {
+        const userName = encodeURIComponent(userData[0].name || "");
+        redirect(`/?form=signin&error=account-banned&user=${userName}`);
+    }
+
+    // ✅ ÉTAPE 2 : Connexion normale (vérifie aussi le mot de passe)
     const response = await auth.api.signInEmail({
         body: { email, password },
         asResponse: true,
@@ -71,12 +87,13 @@ export const signin = async (formData: FormData) => {
         const errorData = await response.json();
         console.log("ERREUR API :", errorData);
 
+        // ⚠️ IMPORTANT : Ne pas révéler si le compte est banni en cas d'erreur
         if (errorData.code === "INVALID_EMAIL_OR_PASSWORD") {
-            redirect("/?form=signin&error=invalid-credentials");
+            redirect("/?form=signin&error=invalid-credentials"); 
+        } else {
+            console.error("Echec de la connexion:", errorData.message);
+            redirect("/?form=signin&error=generic");
         }
-
-        console.error("Echec de la connexion:", errorData.message);
-        redirect("/?form=signin&error=generic");
     }
 
     // 2️⃣ Récupérer l'utilisateur AVANT que la session soit créée
